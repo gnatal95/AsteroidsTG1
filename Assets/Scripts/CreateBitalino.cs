@@ -12,8 +12,4 @@ public class CreateBitalino : MonoBehaviour {
         var gameObject2 = (GameObject)Instantiate(line);
     }
 	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 }

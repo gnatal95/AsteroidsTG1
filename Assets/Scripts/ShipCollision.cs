@@ -12,25 +12,17 @@ public class ShipCollision : MonoBehaviour
 
     void Start()
     {
-        _controller = GameObject.FindGameObjectWithTag("GameController")
-            .GetComponent<GameController>();
-
-        _explosion = Resources.Load("Prefabs/Explosion");
-
-        _bigExplosion = Resources.Load("Prefabs/Big Explosion");
-        
-        _explosionClip = Resources.Load<AudioClip>("Sounds/explosion");
+		LoadResources ();
     }
 
 	void OnTriggerEnter(Collider collider)
     {
-        if (!collider.gameObject.tag.Equals("ShieldA")&&!collider.gameObject.tag.Equals("Asteroid")&&!collider.gameObject.tag.Equals("AsteroidEx")) 
+		
+		if(!IsFriendly())
             return;
 
         var shipPosition = gameObject.transform.position;
-
         var asteroidPosition = collider.gameObject.transform.position;
-
         var rotation = Quaternion.identity;
 
 
@@ -51,14 +43,26 @@ public class ShipCollision : MonoBehaviour
         for (int i = 0; i < 5; i++)
         {
             var explosionAudioSource = mainAudio.AddComponent<AudioSource>();
-
             explosionAudioSource.clip = _explosionClip;
 
-            var delay = (float) random.Next(0, 1);
-
+			var delay = (float) random.Next(0, 1);
             explosionAudioSource.PlayDelayed(delay);
         }
 
         _controller.SetGameOver();   
     }
+
+	private void LoadResources(){
+		_controller = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
+		_explosion = Resources.Load("Prefabs/Explosion");
+		_bigExplosion = Resources.Load("Prefabs/Big Explosion");
+		_explosionClip = Resources.Load<AudioClip>("Sounds/explosion");	
+	}
+
+	private bool IsFriendly(){
+		if (!GetComponent<Collider>().gameObject.tag.Equals ("ShieldA") && !GetComponent<Collider>().gameObject.tag.Equals ("Asteroid") && !GetComponent<Collider>().gameObject.tag.Equals ("AsteroidEx"))
+			return true;
+		return false;
+	}
+
 }

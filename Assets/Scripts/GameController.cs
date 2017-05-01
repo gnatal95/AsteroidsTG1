@@ -49,46 +49,25 @@ public class GameController : MonoBehaviour
 			SceneManager.LoadScene("level 0",LoadSceneMode.Single);
 
 	    _startMenu = GameObject.FindGameObjectWithTag("StartMenu");
-
-        _copyright = GameObject.FindGameObjectWithTag("Copyright")
-            .GetComponent<Text>();
-
-        _scoreText = GameObject.FindGameObjectWithTag("Score")
-            .GetComponent<Text>();
-
-        _distanciaText = GameObject.FindGameObjectWithTag("Distancia")
-           .GetComponent<Text>();
-
-        _countdownText = GameObject.FindGameObjectWithTag("Countdown")
-            .GetComponent<Text>();
-
-        _gameWinText = GameObject.FindGameObjectWithTag("GameWin")
-            .GetComponent<Text>();
-
-        _gameLoseText = GameObject.FindGameObjectWithTag("GameLose")
-            .GetComponent<Text>();
-
-        _faseCompleta = GameObject.FindGameObjectWithTag("Completa")
-            .GetComponent<Text>();
-
+        _copyright = GameObject.FindGameObjectWithTag("Copyright").GetComponent<Text>();
+        _scoreText = GameObject.FindGameObjectWithTag("Score").GetComponent<Text>();
+        _distanciaText = GameObject.FindGameObjectWithTag("Distancia").GetComponent<Text>();
+        _countdownText = GameObject.FindGameObjectWithTag("Countdown").GetComponent<Text>();
+        _gameWinText = GameObject.FindGameObjectWithTag("GameWin").GetComponent<Text>();
+        _gameLoseText = GameObject.FindGameObjectWithTag("GameLose").GetComponent<Text>();
+        _faseCompleta = GameObject.FindGameObjectWithTag("Completa").GetComponent<Text>();
         _credits = GameObject.FindGameObjectWithTag("Credits");
-
-
-
         _credits.SetActive(false);
 
 	    var ship = GameObject.FindGameObjectWithTag("Player");
 
 	    _shipMovement = ship.GetComponentInChildren<ShipMovement>();
-
 	    _shipFireWeapon = ship.GetComponentInChildren<ShipFireWeapon>();
 
 	    var camera = GameObject.FindGameObjectWithTag("MainCamera");
-
-	    _cameraChase = camera.GetComponentInChildren<CameraChase>();
-
+	
+		_cameraChase = camera.GetComponentInChildren<CameraChase>();
         _startMenu.SetActive(false);
-
         _copyright.enabled = false;
 
         var udp = GameObject.FindGameObjectWithTag("UDP").GetComponentInChildren<UDPObj>();
@@ -100,9 +79,7 @@ public class GameController : MonoBehaviour
     void Update () 
     {
 	    HandleStartGame();
-
 	    HandleMovement();
-
 	    HandleFireWeapons();
 
 	    //HandleViewChange();
@@ -119,14 +96,9 @@ public class GameController : MonoBehaviour
         else 
             _distanciaText.text = "Entre no hiperespaco";
 
-
         
-
         HandleExitGame();
-
-
 	    HandleResetLevel();
-
         HandleShowCredits();
 
         if (Input.GetKey(KeyCode.P))

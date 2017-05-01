@@ -13,14 +13,9 @@ public class TorpedoCollision : MonoBehaviour
 
     void Start()
     {
-        _gameController =  GameObject.FindGameObjectWithTag("GameController")
-            .GetComponent<GameController>();
+        _gameController =  GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
+		LoadRessources ();
 
-        _explosion = Resources.Load("Prefabs/Explosion");
-
-        _explosionEx = Resources.Load("Prefabs/Asteroid Explosion");
-
-        _explosionClip = Resources.Load<AudioClip>("Sounds/explosion");
     }
 
     void OnTriggerEnter(Collider collider)
@@ -30,17 +25,14 @@ public class TorpedoCollision : MonoBehaviour
 
 
             var asteroid = collider.gameObject;
-
             var destroy = !asteroid.GetComponentInChildren<AsteroidType>().indestructible;
-
             var asteroidPosition = asteroid.transform.position;
-
             var rotation = Quaternion.identity;
-
             var asteroidMovement = asteroid.GetComponentInChildren<AsteroidMovement>();
 
             var direction = asteroidMovement.Direction;
-            if (destroy)
+
+			if (destroy)
             { 
                 if (asteroid.GetComponentInChildren<AsteroidType>().explosive)
                 {
@@ -87,7 +79,6 @@ public class TorpedoCollision : MonoBehaviour
     private void CreateChildAsteroids(Vector3 position, Vector3 direction, float size)
     {
         CreateChildAsteroid(position, direction, size);
-
         CreateChildAsteroid(position, direction, size);
     }
 
@@ -119,4 +110,12 @@ public class TorpedoCollision : MonoBehaviour
 
         movement.Direction = childDirection;
     }
+
+	private void LoadRessources(){
+		_explosion = Resources.Load("Prefabs/Explosion");
+		_explosionEx = Resources.Load("Prefabs/Asteroid Explosion");
+		_explosionClip = Resources.Load<AudioClip>("Sounds/explosion");
+	
+	}
+
 }
