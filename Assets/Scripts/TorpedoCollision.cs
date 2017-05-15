@@ -85,23 +85,16 @@ public class TorpedoCollision : MonoBehaviour
     private void CreateChildAsteroid(Vector3 position, Vector3 direction, float size)
     {
         var asteroid = Resources.Load("Prefabs/Asteroid");
-
         var rotation = new Quaternion(0f, 0f, 0f, 0f);
-
         var childSize = size / 2f;
-
         var gameObject = (GameObject)Instantiate(asteroid, position, rotation);
 
         gameObject.transform.localScale = new Vector3(childSize, childSize, childSize);
 
         var x = Math.Abs(direction.x);
-
         var y = Math.Abs(direction.y);
-
         var mx = Random.Range(-x, x);
-
         var my = Random.Range(-y, y);
-
         var mz = 0f;
 
         var childDirection = new Vector3(mx, my, mz);

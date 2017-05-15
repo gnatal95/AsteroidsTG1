@@ -6,7 +6,6 @@ public class GreenPillCollision : MonoBehaviour {
     private Object _explosion;
     private AudioClip _sound;
 
-	//resources load carrega assets para o jogo
     void Start()
     {
 		LoadAssets ();
@@ -21,35 +20,30 @@ public class GreenPillCollision : MonoBehaviour {
 
     void OnTriggerEnter(Collider collider)
     {
-		if (IsPlayer ())
+		if (!IsPlayer (collider))
 			return;
 
         var pillPosition = collider.gameObject.transform.position;
-
         var rotation = Quaternion.identity;
 
 		//cria um clone do objeto explosion
         Instantiate(_explosion, pillPosition, rotation);
 
         var mainAudio = GameObject.FindGameObjectWithTag("MainAudio");
-
         var audio = mainAudio.AddComponent<AudioSource>();
 
         audio.clip = _sound;
-
         audio.Play();
-
         Destroy(gameObject);
 
         var shield = GameObject.FindGameObjectWithTag("Shield");
 
         shield.GetComponent<MeshRenderer>().enabled = true;
-
         shield.GetComponent<SphereCollider>().enabled = true;
     }
 
-	private bool IsPlayer(){
-		if (GetComponent<Collider>().gameObject.tag.Equals("Player"))
+	private bool IsPlayer(Collider collider){
+		if (collider.gameObject.tag.Equals("Player"))
 			return true;		
 		return false;
 	}

@@ -59,9 +59,9 @@ public class ShieldCollision : MonoBehaviour
 	}
 
 	private bool IsPlayer(){
-		if (!GetComponent<Collider> ().gameObject.tag.Equals ("ShieldA") && !GetComponent<Collider>().gameObject.tag.Equals ("Asteroid") && !GetComponent<Collider>().gameObject.tag.Equals ("AsteroidEx"))
-			return false;
-		return true;
+		if (GetComponent<Collider>().gameObject.tag.Equals("Player"))
+			return true;
+		return false;
 	}
 
 }

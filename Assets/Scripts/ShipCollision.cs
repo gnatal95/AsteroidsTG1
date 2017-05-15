@@ -17,8 +17,7 @@ public class ShipCollision : MonoBehaviour
 
 	void OnTriggerEnter(Collider collider)
     {
-		
-		if(!IsFriendly())
+		if(IsFriendly(collider))
             return;
 
         var shipPosition = gameObject.transform.position;
@@ -59,8 +58,8 @@ public class ShipCollision : MonoBehaviour
 		_explosionClip = Resources.Load<AudioClip>("Sounds/explosion");	
 	}
 
-	private bool IsFriendly(){
-		if (!GetComponent<Collider>().gameObject.tag.Equals ("ShieldA") && !GetComponent<Collider>().gameObject.tag.Equals ("Asteroid") && !GetComponent<Collider>().gameObject.tag.Equals ("AsteroidEx"))
+	private bool IsFriendly(Collider collider){
+		if (collider.CompareTag("GreenPill"))
 			return true;
 		return false;
 	}

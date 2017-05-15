@@ -35,7 +35,7 @@ public class CreateAsteroids : MonoBehaviour {
 
 			gameObject.transform.localScale = new Vector3(scale, scale, scale);
 
-			var movement = gameObject.GetComponentInChildren<AsteroidMovement>();
+			var movement = GameObject.FindObjectOfType<AsteroidMovement>();
 			if (IsIndestructible ())
 				SetIndesctrutible ();
 			if(IsShielded())
@@ -193,12 +193,12 @@ public class CreateAsteroids : MonoBehaviour {
 	}
 
 	private void SetIndesctrutible(){
-		var ast = gameObject.GetComponentInChildren<AsteroidType>();
+		var ast = GameObject.FindObjectOfType<AsteroidType>();
 		ast.indestructible = true;
 	}
 
 	private void SetShielded(){
-		var shield = gameObject.transform.FindChild("Shield Asteroid");
+		var shield = GameObject.Find("Shield Asteroid");
 		shield.GetComponent<MeshRenderer>().enabled = true;
 		shield.GetComponent<SphereCollider>().enabled = true;
 	}
@@ -206,7 +206,7 @@ public class CreateAsteroids : MonoBehaviour {
 
 	private void SetExplosive(){
 		if (Explosive) {
-			var ast = gameObject.GetComponentInChildren<AsteroidType>();
+			var ast = GameObject.FindObjectOfType<AsteroidType>();
 			ast.explosive = true;
 
 		}

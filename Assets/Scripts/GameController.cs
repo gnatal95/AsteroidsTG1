@@ -20,6 +20,8 @@ public class GameController : MonoBehaviour
     public int DeathNormal = 0;
     public int DeathHard = 0;
     public int DeathLimit = 0;
+	[HideInInspector]public int time =0;
+	public levelSelect leveSelecter =  new levelSelect();
 
     private bool DDA = false;
     private bool dead = false;
@@ -41,62 +43,24 @@ public class GameController : MonoBehaviour
     private ShipFireWeapon _shipFireWeapon;
     private CameraChase _cameraChase;
 
-
-    // Use this for initialization
     void Start ()
 	{
         if (Input.GetKey(KeyCode.Alpha1))
 			SceneManager.LoadScene("level 0",LoadSceneMode.Single);
 
-	    _startMenu = GameObject.FindGameObjectWithTag("StartMenu");
-        _copyright = GameObject.FindGameObjectWithTag("Copyright").GetComponent<Text>();
-        _scoreText = GameObject.FindGameObjectWithTag("Score").GetComponent<Text>();
-        _distanciaText = GameObject.FindGameObjectWithTag("Distancia").GetComponent<Text>();
-        _countdownText = GameObject.FindGameObjectWithTag("Countdown").GetComponent<Text>();
-        _gameWinText = GameObject.FindGameObjectWithTag("GameWin").GetComponent<Text>();
-        _gameLoseText = GameObject.FindGameObjectWithTag("GameLose").GetComponent<Text>();
-        _faseCompleta = GameObject.FindGameObjectWithTag("Completa").GetComponent<Text>();
-        _credits = GameObject.FindGameObjectWithTag("Credits");
-        _credits.SetActive(false);
+		LoadResourcers ();
 
-	    var ship = GameObject.FindGameObjectWithTag("Player");
-
-	    _shipMovement = ship.GetComponentInChildren<ShipMovement>();
-	    _shipFireWeapon = ship.GetComponentInChildren<ShipFireWeapon>();
-
-	    var camera = GameObject.FindGameObjectWithTag("MainCamera");
-	
-		_cameraChase = camera.GetComponentInChildren<CameraChase>();
-        _startMenu.SetActive(false);
-        _copyright.enabled = false;
-
-        var udp = GameObject.FindGameObjectWithTag("UDP").GetComponentInChildren<UDPObj>();
-        udp.sendData("3\n");
-        udp.sendData(Level + "" + Difficulty + "\n");
     }
 
-    // Update is called once per frame
     void Update () 
     {
 	    HandleStartGame();
 	    HandleMovement();
 	    HandleFireWeapons();
+		UpdateTime();
+		UpdateWinnigDistance ();
+		UpdateDistanceText ();
 
-	    //HandleViewChange();
-
-        int time = (int)Time.fixedTime;
-        _scoreText.text = "Time: " + time;
-
-        if (!_isGameOver) {
-            var ship = GameObject.FindGameObjectWithTag("Player");
-            Distancia = 500 - (int)ship.transform.position.x;
-        }
-		if(Distancia>0)
-            _distanciaText.text = "Distancia: " + Distancia;
-        else 
-            _distanciaText.text = "Entre no hiperespaco";
-
-        
         HandleExitGame();
 	    HandleResetLevel();
         HandleShowCredits();
@@ -139,11 +103,10 @@ public class GameController : MonoBehaviour
         //Adquirir dados do teste
         if (!end)
         {
-            int l = Level - 1;
-            var fileName = "L" + l + " d" + Difficulty + DateTime.UtcNow.ToString(" dd.MM.yyyy HH.mm") + ".txt";
+			var fileName = "L" + (Level-1).ToString() + " d" + Difficulty + DateTime.UtcNow.ToString(" dd.MM.yyyy HH.mm") + ".txt";
             var sr = File.CreateText(fileName);
             sr.WriteLine("Deaths: " + judge.deaths);
-            sr.WriteLine("Time: " + judge.time + " s");
+			sr.WriteLine("Time: " + time + " s");
             sr.Close();
         }
         if (Level == 6)
@@ -156,51 +119,7 @@ public class GameController : MonoBehaviour
 
         
         judge.Resetd();
-        switch (Level)
-        {
-			case 1:
-				if (Difficulty == 0)
-					SceneManager.LoadScene("level 1 easy",LoadSceneMode.Single);
-				else if (Difficulty == 2)
-					SceneManager.LoadScene("level 1 hard",LoadSceneMode.Single);
-				else
-					SceneManager.LoadScene("level 1 normal",LoadSceneMode.Single);
-				break;
-			case 2:
-				if (Difficulty == 0)
-					SceneManager.LoadScene("level 2 easy",LoadSceneMode.Single);
-				else if (Difficulty == 2)
-					SceneManager.LoadScene("level 2 hard",LoadSceneMode.Single);
-				else
-					SceneManager.LoadScene("level 2 normal",LoadSceneMode.Single);
-				break;
-			case 3:
-				if (Difficulty == 0)
-					SceneManager.LoadScene("level 3 easy",LoadSceneMode.Single);
-				else if (Difficulty == 2)
-					SceneManager.LoadScene("level 3 hard",LoadSceneMode.Single);
-				else
-					SceneManager.LoadScene("level 3 normal",LoadSceneMode.Single);
-				break;
-			case 4:
-				if (Difficulty == 0)
-					SceneManager.LoadScene("level 4 easy",LoadSceneMode.Single);
-				else if (Difficulty == 2)
-					SceneManager.LoadScene("level 4 hard",LoadSceneMode.Single);
-				else
-					SceneManager.LoadScene("level 4 normal",LoadSceneMode.Single);
-				break;
-			case 5:
-				if (Difficulty == 0)
-					SceneManager.LoadScene("level 5 easy",LoadSceneMode.Single);
-				else if (Difficulty == 2)
-					SceneManager.LoadScene("level 5 hard",LoadSceneMode.Single);
-				else
-					SceneManager.LoadScene("level 5 normal",LoadSceneMode.Single);
-				break;
-                    
-        }
-        
+		leveSelecter.LevelChoser (Level,Difficulty);
     }
 
     private void HandleStartGame()
@@ -290,57 +209,7 @@ public class GameController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             dead = !dead;
-            switch (Level)
-            {
-				case 0:
-					if (Difficulty == 0)
-						SceneManager.LoadScene("level 0 easy",LoadSceneMode.Single);
-					else if (Difficulty == 2)
-						SceneManager.LoadScene("level 0 hard",LoadSceneMode.Single);
-					else
-						SceneManager.LoadScene("level 0",LoadSceneMode.Single);
-					break;
-				case 1:
-					if (Difficulty == 0)
-						SceneManager.LoadScene("level 1 easy",LoadSceneMode.Single);
-					else if (Difficulty == 2)
-						SceneManager.LoadScene("level 1 hard",LoadSceneMode.Single);
-					else
-						SceneManager.LoadScene("level 1 normal",LoadSceneMode.Single);
-					break;
-				case 2:
-					if (Difficulty == 0)
-						SceneManager.LoadScene("level 2 easy",LoadSceneMode.Single);
-					else if (Difficulty == 2)
-						SceneManager.LoadScene("level 2 hard",LoadSceneMode.Single);
-					else
-						SceneManager.LoadScene("level 2 normal",LoadSceneMode.Single);
-					break;
-				case 3:
-					if (Difficulty == 0)
-						SceneManager.LoadScene("level 3 easy",LoadSceneMode.Single);
-					else if (Difficulty == 2)
-						SceneManager.LoadScene("level 3 hard",LoadSceneMode.Single);
-					else
-						SceneManager.LoadScene("level 3 normal",LoadSceneMode.Single);
-					break;
-				case 4:
-					if (Difficulty == 0)
-						SceneManager.LoadScene("level 4 easy",LoadSceneMode.Single);
-					else if (Difficulty == 2)
-						SceneManager.LoadScene("level 4 hard",LoadSceneMode.Single);
-					else
-						SceneManager.LoadScene("level 4 normal",LoadSceneMode.Single);
-					break;
-				case 5:
-					if (Difficulty == 0)
-						SceneManager.LoadScene("level 5 easy",LoadSceneMode.Single);
-					else if (Difficulty == 2)
-						SceneManager.LoadScene("level 5 hard",LoadSceneMode.Single);
-					else
-						SceneManager.LoadScene("level 5 normal",LoadSceneMode.Single);
-					break;
-            }
+			leveSelecter.LevelChoser (Level,Difficulty);
         }
     }
 
@@ -378,18 +247,16 @@ public class GameController : MonoBehaviour
         if (DateTime.Now.Subtract(_endTime).Seconds < 2)
             return;
 
+		// o codigo comentado abaixo so funciona com a presenca do bitalino
+		//tente comenta-lo caso o jogo esteja crashando
 
         string emotion = udp.getLatestUDPPacket();
-        // o codigo comentado abaixo so funciona com a presenca do bitalino
-		//deve ser descomentado assim que possivel
-		//if (judge.GetDDA() < 2)
-        //{
-         //   if (!emotion.Equals("stressed") && !emotion.Equals("bored") && !emotion.Equals("challenged"))
-          //      return;
-       // }
+		if (judge.GetDDA() < 2)
+        {
+            if (!emotion.Equals("stressed") && !emotion.Equals("bored") && !emotion.Equals("challenged"))
+                return;
+        }
         judge.TimeClear();
-
-
 
 
         _gameWinText.enabled = false;
@@ -401,16 +268,14 @@ public class GameController : MonoBehaviour
             udp.sendData("4\n");
             Level++;
         }
-
-
+			
         //Adquirir dados do teste
         if (!end)
-        {
-            int l = Level - 1;
-            var fileName = "L" + l + " d" + Difficulty + DateTime.UtcNow.ToString(" dd.MM.yyyy HH.mm") + ".txt";
+        {			
+			var fileName = "L" + (Level-1).ToString() + " d" + Difficulty + DateTime.UtcNow.ToString(" dd.MM.yyyy HH.mm") + ".txt";
             var sr = File.CreateText(fileName);
             sr.WriteLine("Deaths: " + judge.deaths);
-            sr.WriteLine("Time: " + judge.time + " s");
+            sr.WriteLine("Time: " + time + " s");
             sr.Close();
         }
         if (Level == 6)
@@ -578,57 +443,7 @@ public class GameController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             judge.Resetd();
-            switch (Level)
-            {
-				case 0:
-					if (Difficulty == 0)
-						SceneManager.LoadScene("level 0 easy",LoadSceneMode.Single);
-					else if (Difficulty == 2)
-						SceneManager.LoadScene("level 0 hard",LoadSceneMode.Single);
-					else
-						SceneManager.LoadScene("level 0",LoadSceneMode.Single);
-					break;
-				case 1:
-					if (Difficulty == 0)
-						SceneManager.LoadScene("level 1 easy",LoadSceneMode.Single);
-					else if (Difficulty == 2)
-						SceneManager.LoadScene("level 1 hard",LoadSceneMode.Single);
-					else
-						SceneManager.LoadScene("level 1 normal",LoadSceneMode.Single);
-					break;
-				case 2:
-					if (Difficulty == 0)
-						SceneManager.LoadScene("level 2 easy",LoadSceneMode.Single);
-					else if (Difficulty == 2)
-						SceneManager.LoadScene("level 2 hard",LoadSceneMode.Single);
-					else
-						SceneManager.LoadScene("level 2 normal",LoadSceneMode.Single);
-					break;
-				case 3:
-					if (Difficulty == 0)
-						SceneManager.LoadScene("level 3 easy",LoadSceneMode.Single);
-					else if (Difficulty == 2)
-						SceneManager.LoadScene("level 3 hard",LoadSceneMode.Single);
-					else
-						SceneManager.LoadScene("level 3 normal",LoadSceneMode.Single);
-					break;
-				case 4:
-					if (Difficulty == 0)
-						SceneManager.LoadScene("level 4 easy",LoadSceneMode.Single);
-					else if (Difficulty == 2)
-						SceneManager.LoadScene("level 4 hard",LoadSceneMode.Single);
-					else
-						SceneManager.LoadScene("level 4 normal",LoadSceneMode.Single);
-					break;
-				case 5:
-					if (Difficulty == 0)
-						SceneManager.LoadScene("level 5 easy",LoadSceneMode.Single);
-					else if (Difficulty == 2)
-						SceneManager.LoadScene("level 5 hard",LoadSceneMode.Single);
-					else
-						SceneManager.LoadScene("level 5 normal",LoadSceneMode.Single);
-					break;
-            }
+			leveSelecter.LevelChoser (Level,Difficulty);
         }
 
     }
@@ -693,5 +508,55 @@ public class GameController : MonoBehaviour
     {
         return Difficulty;
     }
+
+	private void LoadResourcers(){
+
+		_startMenu = GameObject.FindGameObjectWithTag("StartMenu");
+		_copyright = GameObject.FindGameObjectWithTag("Copyright").GetComponent<Text>();
+		_scoreText = GameObject.FindGameObjectWithTag("Score").GetComponent<Text>();
+		_distanciaText = GameObject.FindGameObjectWithTag("Distancia").GetComponent<Text>();
+		_countdownText = GameObject.FindGameObjectWithTag("Countdown").GetComponent<Text>();
+		_gameWinText = GameObject.FindGameObjectWithTag("GameWin").GetComponent<Text>();
+		_gameLoseText = GameObject.FindGameObjectWithTag("GameLose").GetComponent<Text>();
+		_faseCompleta = GameObject.FindGameObjectWithTag("Completa").GetComponent<Text>();
+		_credits = GameObject.FindGameObjectWithTag("Credits");
+		_credits.SetActive(false);
+
+		var ship = GameObject.FindGameObjectWithTag("Player");
+
+		_shipMovement = ship.GetComponentInChildren<ShipMovement>();
+		_shipFireWeapon = ship.GetComponentInChildren<ShipFireWeapon>();
+
+		var camera = GameObject.FindGameObjectWithTag("MainCamera");
+
+		_cameraChase = camera.GetComponentInChildren<CameraChase>();
+		_startMenu.SetActive(false);
+		_copyright.enabled = false;
+
+		var udp = GameObject.FindGameObjectWithTag("UDP").GetComponentInChildren<UDPObj>();
+		udp.sendData("3\n");
+		udp.sendData(Level + "" + Difficulty + "\n");
+
+	}
+
+	private void UpdateWinnigDistance(){	
+		if (!_isGameOver) {
+			var ship = GameObject.FindGameObjectWithTag("Player");
+			Distancia = 500 - (int)ship.transform.position.x;
+		}
+	}
+
+	private void UpdateDistanceText(){
+		if(Distancia>0)
+			_distanciaText.text = "Distancia: " + Distancia;
+		else 
+			_distanciaText.text = "Entre no hiperespaco";
+	}
+
+	private void UpdateTime(){
+		time = (int)Time.fixedTime;
+		_scoreText.text = "Time: " + time;
+	}
+
 }
 

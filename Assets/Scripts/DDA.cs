@@ -5,7 +5,7 @@ public class DDA : MonoBehaviour {
 
     public int deaths=0;
     public float time=0, timeJ=0;
-    bool change = true;//mode deveria ser um enum, size tbm
+    public bool change = true;//mode deveria ser um enum, size tbm
     public int mode=0; //-1:bored, 0:focused, 1=:stressed
     public int size = 0;//-1:small, 0:normal, 1:large
     public float ver=0;//ddaTipo deveria ser um enum
@@ -21,9 +21,8 @@ public class DDA : MonoBehaviour {
     }
 
     public void TimeClear(){
-        if (change)
-        {
-            if (Time.fixedTime - time>40) {
+        if (change){
+			if (Time.fixedTime - time>40) {
                 this.timeJ = Time.fixedTime - time;
                 this.time = Time.fixedTime;
                 this.change = false;
